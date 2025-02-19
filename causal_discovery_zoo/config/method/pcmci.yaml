@@ -1,0 +1,5 @@
+name: pcmci
+max_lag: 5 
+cut_at: 50000 # cuts the time series at step x to prevent computing issues.
+ci_test: linear
+

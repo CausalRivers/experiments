@@ -1,0 +1,7 @@
+name: cp
+batch_size: 512 # supercharged for cp and cdmi # 512 for CP
+architecture: transformer
+weight_path: methods/cp_models/pretrained_weights/
+finetune_path: methods/cp_models/finetune_best/2024-10-07 11:52:56.640419/epoch=29-step=13020.ckpt 
+use_river_finetune: False
+batch_aggregation: max

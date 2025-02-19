@@ -1,0 +1,29 @@
+defaults:
+  - _self_
+  - method: var
+  - data_preprocess: example_data
+  - override hydra/launcher: submitit_slurm
+
+label_path: "datasets/split_format/"
+data_path: "datasets/split_format"
+save_path: "results/"
+save_full_out: True
+restrict_to: -1
+map_to_summary_graph: "max"
+parallel: False # NOT implemented
+remove_diagonal: False
+index_col: False
+dt_preprocess: False
+
+hydra:
+  launcher: 
+    cpus_per_task: 8
+    #gpus_per_task: 0
+    timeout_min: 6969
+    mem_gb: 16
+    #partition: workstation,robolab
+
+  #mode: MULTIRUN
+#   sweeper:
+#     params:
+#         method: choice("corr", "mean", "combo", "var")

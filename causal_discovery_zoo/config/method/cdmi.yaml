@@ -1,0 +1,27 @@
+name: cdmi
+batch_size: 8
+freq: ${data_preprocess.resolution_value}
+device: "cpu"
+# Training params
+learning_rate: 1E-4
+epochs: 25
+# Model params
+num_layers: 1
+num_cells: 40
+dropout_rate: 0.1
+context_length: 30
+num_samples: 100
+intervention_type: "knockoff"
+error_metric: "mae"
+significance_test: "kl_div"
+mean_std: 0.05 
+step_size: 5
+prediction_length: 10
+normalize_effect_strength: True
+#training split: 
+select_automatic_data_split: False 
+training_length: 1000
+num_windows: 50
+use_cached_model: False
+save_intermediate: False
+

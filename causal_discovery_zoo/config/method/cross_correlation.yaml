@@ -1,0 +1,3 @@
+name: cross_corr
+max_lag: 50
+filter_mode: None # next,biggest,corr

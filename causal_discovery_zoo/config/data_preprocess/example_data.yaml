@@ -1,0 +1,5 @@
+resolution: 6H
+interpolate: True
+subset: False
+subsample: 1
+normalize: False

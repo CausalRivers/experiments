@@ -1,0 +1,56 @@
+# some columns for formatting etc.
+
+metrics: [
+    'Max Acc thresh',
+    'Max Acc',
+    'Max individual Acc thresh',
+    'Max individual Acc',
+    'Null Acc',
+    'Max F1 thresh',
+    'Max F1',
+    'Max individual F1 thresh',
+    'Max individual F1',
+    'Null F1',
+    'AUROC',
+    'Individual AUROC',
+    'Null AUROC',
+    "runtime"
+]
+
+# ALl params that were evaluated.
+hp_list: [
+    "data_preprocess.resolution",
+    "data_preprocess.normalize",
+    "label_path",
+    "method.max_lag",
+    "method.var_absolute_values",
+    "method.filter_mode",
+     ]
+
+# due to hydra config changes.
+rename: 
+  resolution_value: "data_preprocess.resolution"
+  method_hps.var_absolute_values: "method.var_absolute_values"
+  method_hps.filter_mode: "method.filter_mode"
+  method_hps.max_lag: "method.max_lag"
+  ds_name: "label_path"
+  normalize: "data_preprocess.normalize"
+
+ds_order:  [
+    "close_3",
+    "close_5",
+    "root_cause_3",
+    "root_cause_5",
+    "1_random_3",
+    "1_random_5",
+    "confounder_3",
+    "confounder_5",
+    "random_3",
+    "random_5",
+    "disjoint_10"
+]
+
+
+data_path: /home/datasets4/stein/rivers/paper_result_storage/new_runs/exp1/
+method_name: combo
+save_path: "grid_export"

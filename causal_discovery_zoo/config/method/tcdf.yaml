@@ -1,0 +1,16 @@
+nam: tcdf
+epochs: 1000 # number of training epochs
+max_lag: 3 # number of max lags -> returns max_lag +1 (for instant.)
+optimizername: "Adam"
+learningrate: 0.01
+dilation_coefficient: 4
+significance: 0.8 
+loginterval: 500 # when to log stuff
+levels: 1 # number of hidden layers, default is 1
+seed: 42 # seed for the torch init
+
+use_weights_directly: true 
+# if true, then we use the learned attention weights as scores
+#          Note that this is not the original behavior.
+# if false, then we build the binary result matrix according to 
+#           the original tcdf algorithm. 
