@@ -1,22 +1,15 @@
-import sys
-import pickle
-import numpy as np
 import hydra
 from omegaconf import DictConfig
-from tools.tools import benchmarking, score
-import pandas as pd
-import os
-import pickle
-from omegaconf import OmegaConf
 import datetime
 
 from tools.tools import (
-    summary_transform,
-    load_single_samples,
     load_joint_samples,
     benchmarking,
-    datetime_preprocessing,
+    standard_preprocessing,
+    save_run,
+    summary_transform,
 )
+from tools.scoring_tools import score
 
 
 # Example script to benchmark causal discovery methods.
@@ -46,47 +39,27 @@ def main(cfg: DictConfig):
         from methods.cdmi import cdmi_baseline as cd_method
     elif cfg.method.name == "cp":
         from methods.causal_pretraining import causal_pretraining_baseline as cd_method
-    elif cfg.method.name == "stic":
-        from methods.stic import stic_baseline as cd_method
-    elif cfg.method.name == "tcdf":
-        from methods.tcdf import tcdf_baseline as cd_method
     else:
         raise ValueError("Invalid method")
 
-    if cfg.label_path[-1] == "/":
-        print("Folder specified.Attempting single load.")
-        test_data, test_labels = load_single_samples(cfg)
-    else:
-        print("File specified. Attempting joint load.")
-        test_data, test_labels = load_joint_samples(
-            cfg, index_col=cfg.index_col, preprocessing=datetime_preprocessing if cfg.dt_preprocess else None
-        )
+    print("File specified. Attempting joint load.")
+    test_data, test_labels = load_joint_samples(
+        cfg, preprocessing=standard_preprocessing if cfg.dt_preprocess else None
+    )
     preds = benchmarking(test_data, cfg, cd_method)
-
     if test_labels[0].ndim == 2 and preds[0].ndim == 3:
         # reduce lag dimension according so config
-        preds = [summary_transform(x, cfg) for x in preds]
+        preds = [summary_transform(x, cfg.map_to_summary_graph) for x in preds]
 
-    preds = np.array(preds)
-    test_labels = np.array(test_labels)
-    out = score(preds, test_labels, cfg)
+
+    print(preds[0])
+    out = score(preds, test_labels, cfg.remove_diagonal, name=cfg.method.name)
+
+    stop_time = datetime.datetime.now() - start
     print(out)
     if cfg.save_full_out:
-
-        # make folder with naming
-        p = cfg.save_path + cfg.method.name + "_" + cfg.label_path.split("/")[-2]
-        if not os.path.exists(p):
-            os.makedirs(p)
-        inner_p = p + "/" + str(datetime.datetime.now())[:24]
-        os.makedirs(inner_p)
-        out.to_csv(inner_p + "/scoring.csv")
-        stop_time = datetime.datetime.now() - start
-        pd.DataFrame([stop_time], columns=["runtime"]).to_csv(
-            inner_p + "/runtime.csv"
-        )  # dumps to file:
-        with open(inner_p + "/config.yaml", "w") as f:
-            OmegaConf.save(cfg, f)
-        pickle.dump(preds, open(inner_p + "/preds.p", "wb"))
+        print("Saving...")
+        save_run(out, stop_time, preds, cfg)
     print("Done", stop_time)
 
 

@@ -25,6 +25,7 @@ hp_list: [
     "method.max_lag",
     "method.var_absolute_values",
     "method.filter_mode",
+    "method.architecture"
      ]
 
 # due to hydra config changes.
@@ -33,8 +34,11 @@ rename:
   method_hps.var_absolute_values: "method.var_absolute_values"
   method_hps.filter_mode: "method.filter_mode"
   method_hps.max_lag: "method.max_lag"
+  method_hps.cp_architecture: "method.architecture"
   ds_name: "label_path"
   normalize: "data_preprocess.normalize"
+  window_data_month_value: "data_preprocess.subset_month"
+  window_data_year_value: "data_preprocess.subset_year"
 
 ds_order:  [
     "close_3",
@@ -51,6 +55,7 @@ ds_order:  [
 ]
 
 
-data_path: /home/datasets4/stein/rivers/paper_result_storage/new_runs/exp1/
+data_path: /home/datasets4/stein/rivers/paper_result_storage/new_runs/
+exp: exp1/
 method_name: combo
-save_path: "grid_export"
+save_path: "grid_export_"

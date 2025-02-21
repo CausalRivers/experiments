@@ -1,6 +1,6 @@
 name: cdmi
 batch_size: 8
-freq: ${data_preprocess.resolution_value}
+freq: ${data_preprocess.resolution}
 device: "cpu"
 # Training params
 learning_rate: 1E-4

@@ -53,7 +53,7 @@ def cross_correlation_for_causal_discovery(d, cfg, return_corr=False):
     corr_map = calc_lagged_cross_corr(d,cfg.max_lag,1)
     out =  corr_map.argmax(axis=2).T > int(corr_map.shape[2] / 2)
     # restrict to the river with the higest cross correlation
-    if (cfg.filter_mode == "corr") and cfg.method != "combo":
+    if (cfg.filter_mode == "corr") and (cfg.name != "combo"):
         print("using corr filter")
         peak = corr_map.max(axis=2)
         peak[~out] = 0

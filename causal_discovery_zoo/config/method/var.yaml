@@ -1,3 +1,4 @@
 name: var
-max_lag: 5 
-var_absolute_values: False
+max_lag: 3
+var_absolute_values: True
+map_to_summary_graph: "max"

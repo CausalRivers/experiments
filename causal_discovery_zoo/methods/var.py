@@ -8,11 +8,8 @@ def var_baseline(d, cfg):
     Simple Granger based strategy that selects based on absolute parameter values.
     """
     
-
-
     d.index = pd.DatetimeIndex(d.index.values,
-                                freq=d.index.inferred_freq)
-        
+                               freq=d.index.inferred_freq)
     
     n_vars = d.values.shape[-1]
     try: #For some samples, data is bricked to have constant TS. If this happens we predict 0

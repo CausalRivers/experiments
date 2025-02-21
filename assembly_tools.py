@@ -46,7 +46,7 @@ def extract_raw_performance(formatted,cfg,scoring="AUROC",name="Combo", restrict
     for x in cfg.ds_order:
         a = formatted[formatted["label_path"] == x]
         if restriction:
-            a.index = ([name + "_" + str(y) for y in a[restriction]])
+            a.index = ([name + "_" + str(y) for y in a[restriction].astype(str).agg("-".join,axis=1)])
         else:
             a.index =  [name]
         a = a[[scoring]]

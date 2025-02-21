@@ -4,23 +4,21 @@ defaults:
   - data_preprocess: example_data
   - override hydra/launcher: submitit_slurm
 
-label_path: "datasets/split_format/"
-data_path: "datasets/split_format"
+label_path: "../../datasets/confounder_3/east.p"
+data_path: "../../product/rivers_ts_east_germany.csv"
 save_path: "results/"
 save_full_out: True
 restrict_to: -1
 map_to_summary_graph: "max"
-parallel: False # NOT implemented
-remove_diagonal: False
-index_col: False
-dt_preprocess: False
+remove_diagonal: True
+dt_preprocess: True
 
 hydra:
   launcher: 
-    cpus_per_task: 8
-    #gpus_per_task: 0
+    cpus_per_task: 12
+    gpus_per_task: 1
     timeout_min: 6969
-    mem_gb: 16
+    mem_gb: 32
     #partition: workstation,robolab
 
   #mode: MULTIRUN

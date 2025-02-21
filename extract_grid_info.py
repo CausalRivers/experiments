@@ -10,20 +10,24 @@ from assembly_tools import load_experimental_grid
 def main(cfg: DictConfig):
     print(cfg)
 
-    data = load_experimental_grid(mypath=cfg.data_path, method_name=cfg.method_name).T
+    data = load_experimental_grid(mypath=cfg.data_path + cfg.exp, method_name=cfg.method_name).T
 
     # test for consistency
     # Fix old hydra specs. Does nothing if strictly  version is used.
     for x in cfg.rename:
-        if cfg.rename[x] in data.columns:
-            data.loc[data[cfg.rename[x]].isnull(), cfg.rename[x]] = data.loc[
-                data[cfg.rename[x]].isnull(), x
-            ]
-        data.drop(columns=x, inplace=True)
-    print("Number of samples in grid:", len(data))
+        if x in data.columns:
+            print("renaming..", x)
+            if cfg.rename[x] in data.columns:
+                data.loc[data[cfg.rename[x]].isnull(), cfg.rename[x]] = data.loc[
+                    data[cfg.rename[x]].isnull(), x
+                ]
+                data.drop(columns=x, inplace=True)
+            else:
+                data.rename(columns={x: cfg.rename[x]}, inplace=True)
 
-    # TODO Fix when relevant for exp2
-    data["window_data_month_value"] = data["window_data_month_value"].astype(str)
+    print("Number of samples in grid:", len(data))
+    # Issue with list specification
+    data["data_preprocess.subset_month"] = data["data_preprocess.subset_month"].astype(str)
     # nothing should vary outside of the hps and the metrics.
     control = data[
         [x for x in data.columns if ((x not in cfg.metrics) and (x not in cfg.hp_list))]
@@ -36,18 +40,27 @@ def main(cfg: DictConfig):
         print(control.T[x].value_counts())
 
     relevant_hps = [x for x in cfg.hp_list if x in data.columns]
+    if cfg.exp == "exp2/":
+        relevant_hps = relevant_hps + ["data_path", "data_preprocess.subset_year", "data_preprocess.subset_month"]
+    
     # label path parsing
     str_data_path = data["label_path"].str.contains("/")
     data.loc[str_data_path, "label_path"] = [
         x[3] for x in data[str_data_path]["label_path"].str.split("/").values
     ]
-    data = data[cfg.metrics + [x for x in cfg.hp_list if x in data.columns]]
+    data = data[cfg.metrics + relevant_hps]
+
+    print("Dropping duplicates:")
+    print(len(data))
+    #Runtime will never match...
+    data = data.drop_duplicates(subset=[x for x in list(data.columns) if x != "runtime"])
+    print(len(data))
 
     assert int(data[relevant_hps].duplicated().sum()) == 0, "Duplicated columns!!"
 
-    if not os.path.exists(cfg.save_path):
-        os.makedirs(cfg.save_path)
-    data.to_csv(cfg.save_path + "/" + cfg.method_name + ".csv")
+    if not os.path.exists(cfg.save_path + cfg.exp):
+        os.makedirs(cfg.save_path+ cfg.exp)
+    data.to_csv(cfg.save_path + cfg.exp + "/" + cfg.method_name + ".csv")
 
 
 if __name__ == "__main__":

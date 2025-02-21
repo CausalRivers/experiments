@@ -26,6 +26,7 @@ def causal_pretraining_baseline(X,cfg):
     M = M.eval()
     M = M.to("cuda")
 
+    n_vars = X.shape[1]
     sample_prep = pad(torch.Tensor(X.values).unsqueeze(0).to("cuda"))
     #Has to be provided.
     corr = lagged_batch_corr(sample_prep, 3)
@@ -48,7 +49,7 @@ def causal_pretraining_baseline(X,cfg):
     if cfg.use_river_finetune and (X.shape[1] != 5):
         pred = pred[:, :X.shape[1], :X.shape[1]]
     else:
-        if sample_prep.shape[2] != 5:
+        if n_vars != 5:
             pred = pred[:,:X.shape[1], :X.shape[1], :]
 
 
@@ -81,7 +82,7 @@ def pad(sample_prep):
     """
     if sample_prep.shape[2] != 5:
         sample_prep = torch.concat(
-            [sample_prep[0, :, :], torch.normal(0, 0.1, (len(sample_prep[0]), 5-sample_prep.shape[2]))], axis=1
+            [sample_prep[0, :, :], torch.normal(0, 0.1, (len(sample_prep[0]), 5-sample_prep.shape[2])).to("cuda")], axis=1
         )
         sample_prep = sample_prep.unsqueeze(0)
     else:
