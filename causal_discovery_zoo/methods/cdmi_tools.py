@@ -101,6 +101,7 @@ def construct_statistics(residual_stack, residual_intervention_stack, cfg):
     return decision_matrix
 
 def calc_error(y_true,y_pred, cfg):
+    print(y_true, y_pred)
     if cfg.error_metric == "mape":
         error  = mean_absolute_percentage_error(y_true,y_pred)
     elif cfg.error_metric == "mse":

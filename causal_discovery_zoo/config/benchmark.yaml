@@ -15,10 +15,10 @@ dt_preprocess: True
 
 hydra:
   launcher: 
-    cpus_per_task: 12
-    gpus_per_task: 1
+    cpus_per_task: 4
+    gpus_per_task: 0
     timeout_min: 6969
-    mem_gb: 32
+    mem_gb: 16
     #partition: workstation,robolab
 
   #mode: MULTIRUN

@@ -1,0 +1,64 @@
+defaults:
+  - _self_
+  - override hydra/launcher: submitit_slurm
+
+sample_path: "datasets/"
+ds_name: "debug_set_5"
+
+
+
+seed: 666
+cp_architecture: "transformer"
+
+
+
+save_finetune_path: "additional_methods/cp_models/finetuned"
+train_data_path: "resources/rivers_ts_bavaria.csv"
+data_path: "resources/rivers_ts_east_germany.csv"
+pretrained_path: "additional_methods/cp_models/pretrained_weights/"
+
+window_size: 600
+
+
+batch_size: 16
+max_lag: 3
+
+
+normalize: False
+resolution_value: "6H"
+interpolation: True
+
+
+window_data_year_value: False # year subselection possible
+window_data_month_value: [] # Further month subselection possible if year is specified
+subsample_value: 1
+
+
+
+max_epochs: 500
+optimizer_lr: 1e-4
+weight_decay: 0.01
+
+tensorboard:
+  _target_: lightning.pytorch.loggers.tensorboard.TensorBoardLogger
+  save_dir: "tensorboard_logs"
+  name: "null"
+  log_graph: False
+  default_hp_metric: True
+  prefix: ""
+  version: null
+
+
+hydra:
+#   mode: MULTIRUN
+#   sweeper:
+#     params:
+#         method: choice("corr", "mean", "combo", "var")
+#         resolution_value: choice("1H", "6H")
+
+  launcher: 
+    cpus_per_task: 4
+    gpus_per_task: 1
+    timeout_min: 6969
+    mem_gb: 8
+    partition: workstation,robolab
