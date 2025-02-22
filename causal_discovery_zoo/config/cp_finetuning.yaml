@@ -2,37 +2,33 @@ defaults:
   - _self_
   - override hydra/launcher: submitit_slurm
 
-sample_path: "datasets/"
-ds_name: "debug_set_5"
+
+label_path: "../../datasets/random_5/east.p"
+data_path: "../../product/rivers_ts_east_germany.csv"
+# preprocess
+
+data_preprocess:
+  resolution: 6h
+  interpolate: True
+  subset_year: False
+  subset_month: False
+  subsample: 1
+  normalize: False
+  remove_trailing_nans_early: False
 
 
+restrict_to: -1
 
 seed: 666
-cp_architecture: "transformer"
-
-
-
-save_finetune_path: "additional_methods/cp_models/finetuned"
-train_data_path: "resources/rivers_ts_bavaria.csv"
-data_path: "resources/rivers_ts_east_germany.csv"
-pretrained_path: "additional_methods/cp_models/pretrained_weights/"
+save_finetune_path: "cp_finetuned/"
+train_data_path: "../product/rivers_ts_bavaria.csv"
+test_path: "../product/rivers_ts_east_germany.csv"
+pretrained_path: methods/cp_models/pretrained_weights/
 
 window_size: 600
 
-
+cp_architecture: transformer
 batch_size: 16
-max_lag: 3
-
-
-normalize: False
-resolution_value: "6H"
-interpolation: True
-
-
-window_data_year_value: False # year subselection possible
-window_data_month_value: [] # Further month subselection possible if year is specified
-subsample_value: 1
-
 
 
 max_epochs: 500
@@ -41,7 +37,7 @@ weight_decay: 0.01
 
 tensorboard:
   _target_: lightning.pytorch.loggers.tensorboard.TensorBoardLogger
-  save_dir: "tensorboard_logs"
+  save_dir: "tensorboard"
   name: "null"
   log_graph: False
   default_hp_metric: True

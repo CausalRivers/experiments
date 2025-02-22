@@ -194,8 +194,8 @@ class Architecture_PL(pl.LightningModule):
 
         curve = torch.Tensor([f1(y_class, lab_class) for f1 in self.F1])
         f1_max = torch.max(curve)
-        out_d["f1_max"  "_" + name] = f1_max
-        out_d["f1_max_th"  "_" + name] = torch.argmax(curve)
+        out_d["f1_max"  "_" + name] = f1_max.type("torch.DoubleTensor")
+        out_d["f1_max_th"  "_" + name] = torch.argmax(curve).type("torch.DoubleTensor")
         self.log_dict(out_d, sync_dist=True, prog_bar=True)
 
     def training_step(self, batch, batch_idx):
@@ -251,7 +251,7 @@ class Architecture_PL(pl.LightningModule):
 
     def adapt_structure_to_rivers(self):
         if self.model_type == "transformer":
-            self.model.fc2 = torch.nn.Linear(self.model.d_ff, 25)
+            self.model.fc2 = torch.nn.Linear(self.d_ff, 25)
         else:
             self.model.fc3 = torch.nn.Linear(self.model.hidden_size3, 25)
         def new_reformat(x):

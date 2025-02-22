@@ -19,6 +19,7 @@ hydra:
     gpus_per_task: 0
     timeout_min: 6969
     mem_gb: 16
+    exclude: ker
     #partition: workstation,robolab
 
   #mode: MULTIRUN
