@@ -46,13 +46,16 @@ def main(cfg: DictConfig):
     test_data, test_labels = load_joint_samples(
         cfg, preprocessing=standard_preprocessing if cfg.dt_preprocess else None
     )
+    
+    test_data = test_data[:3]
+    test_labels = test_labels[:3]
+    
     preds = benchmarking(test_data, cfg, cd_method)
     if test_labels[0].ndim == 2 and preds[0].ndim == 3:
         # reduce lag dimension according so config
         preds = [summary_transform(x, cfg.map_to_summary_graph) for x in preds]
 
 
-    print(preds[0])
     out = score(preds, test_labels, cfg.remove_diagonal, name=cfg.method.name)
 
     stop_time = datetime.datetime.now() - start

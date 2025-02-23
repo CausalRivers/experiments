@@ -27,13 +27,8 @@ def max_accuracy(labs, preds):
     if preds.min() == preds.max():
         a = []
     else:
-        a = list(
-            np.arange(
-                preds.min(),
-                preds.max() + preds.min(),
-                (preds.max() - preds.min()) / 100,
-            )
-        )  # 100 steps
+        a = list(np.linspace(preds.min(), preds.max(), num=100))
+         # 100 steps
     possible_thresholds = [0] + a + [preds.max() + 1e-6]
     acc = [accuracy_score(labs, preds > thresh) for thresh in possible_thresholds]
     acc_thresh = possible_thresholds[np.argmax(acc)]
@@ -94,12 +89,12 @@ def score(preds, labs, remove_autoregressive=True, name="Result"):
             # this can sometimes happen if a limited time window is chosen
             continue
         else:
+
             auroc_ind.append(
                 roc_auc_score(y_true=labs[x].flatten(), y_score=preds[x].flatten())
             )
         f1_thresh, f1_score = f1_max(labs[x].flatten(), preds[x].flatten())
         f1_max_ind.append(f1_score)
-
         f1_thresh_ind.append(f1_thresh)
         acc_thresh, acc_score = max_accuracy(labs[x].flatten(), preds[x].flatten())
         accuracy_ind.append(acc_score)
@@ -118,11 +113,9 @@ def score(preds, labs, remove_autoregressive=True, name="Result"):
     # AUROC
     auroc = roc_auc_score(labs, preds)
     # F1 MAX
-
     f1_thresh, f1_score = f1_max(labs, preds)
     # ACCURACY MAX
     acc_thresh, acc_score = max_accuracy(labs, preds)
-
     null_model_auroc = roc_auc_score(labs, np.zeros(preds.shape))
 
     _, null_model_f1 = f1_max(labs, np.zeros(preds.shape))
