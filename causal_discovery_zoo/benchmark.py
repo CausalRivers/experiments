@@ -47,9 +47,6 @@ def main(cfg: DictConfig):
         cfg, preprocessing=standard_preprocessing if cfg.dt_preprocess else None
     )
     
-    test_data = test_data[:3]
-    test_labels = test_labels[:3]
-    
     preds = benchmarking(test_data, cfg, cd_method)
     if test_labels[0].ndim == 2 and preds[0].ndim == 3:
         # reduce lag dimension according so config
