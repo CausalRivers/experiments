@@ -20,7 +20,7 @@ data_preprocess:
 restrict_to: -1
 
 seed: 666
-save_finetune_path: "cp_finetuned/"
+save_finetune_path: "cp_finetuned_2/"
 train_data_path: "../product/rivers_ts_bavaria.csv"
 test_path: "../product/rivers_ts_east_germany.csv"
 pretrained_path: methods/cp_models/pretrained_weights/
@@ -54,7 +54,8 @@ hydra:
 
   launcher: 
     cpus_per_task: 4
-    gpus_per_task: 1
+    #gpus_per_task: 1
+    gres: "shard:2"
     timeout_min: 6969
     mem_gb: 8
     partition: workstation,robolab

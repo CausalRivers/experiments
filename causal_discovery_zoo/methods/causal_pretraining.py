@@ -31,7 +31,6 @@ def causal_pretraining_baseline(X,cfg):
     #Has to be provided.
     corr = lagged_batch_corr(sample_prep, 3)
 
-
     # sometimes there is a constant ts which results in nan corr. replace this with 0
     corr = torch.nan_to_num(corr,nan=0)
     sample_prep, corr = reshape_long_ts(sample_prep, corr)

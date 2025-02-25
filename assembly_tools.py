@@ -73,22 +73,3 @@ def load_experiment_results(experiment):
     return pd.concat(stack,axis=1)
 
     
-#____________
-
-
-def load_experiment_results_3(experiment):
-    stack = []#
-    namings =[]
-    folders = [f for f in listdir(experiment)]
-    scorings = []
-    for item in folders:
-        nameing = " ".join(item.split("_")[-3:])
-        namings.append(nameing)
-        # load performance
-        res_data = [f for f in listdir(experiment + "/"+ item  )]
-
-        for element in res_data: 
-            if ".csv" in element:
-                performance = pd.read_csv(experiment + "/"+ item + "/" + element)
-                scorings.append(performance)
-    return scorings,namings
