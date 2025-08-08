@@ -3,10 +3,6 @@
 
 # Causal Discovery zoo (Unifying Causal Discovery algorithms)
 
-
-This is an early version of: [Causal Discovery Zoo](https://github.com/Gideon-Stein/Causal_Discovery_Zoo)
-If you want to use this for anything other than recreating the CausalRiver experiments, please choose the newer version.
-
 The following content is included in this repository:
 
 1. Causal Discovery general Benchmarking sleeve
