@@ -1,4 +1,4 @@
-name: rivers1K_torch
+name: cp_rivers_torch
 channels:
   - conda-forge
   - defaults
@@ -78,7 +78,6 @@ dependencies:
     - cloudpickle==3.0.0
     - contourpy==1.2.1
     - cycler==0.12.1
-    - dwdweather2==0.14.0
     - einops==0.8.0
     - filelock==3.15.4
     - fonttools==4.53.0
@@ -131,8 +130,6 @@ dependencies:
     - pyogrio==0.9.0
     - pyparsing==3.1.2
     - pyproj==3.6.1
-    - python-dateutil==2.9.0.post0
-    - python-graphviz==0.20.3
     - python-utils==3.8.2
     - pytorch-lightning==2.3.1
     - pytz==2024.1

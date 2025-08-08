@@ -3,7 +3,6 @@ import lightning.pytorch as pl
 from omegaconf import DictConfig
 
 from lightning.pytorch.callbacks import (
-    LearningRateMonitor,
     RichModelSummary,
     RichProgressBar,
     ModelCheckpoint,
@@ -11,13 +10,11 @@ from lightning.pytorch.callbacks import (
 from torch.utils.data import DataLoader
 
 from methods.causal_pretraining import Architecture_PL, lagged_batch_corr
-import pickle
 from torch.utils.data import Dataset
 import lightning as L
 import torch
 from tools.tools import load_joint_samples, standard_preprocessing
 import datetime
-import numpy as np
 from lightning.pytorch.loggers import TensorBoardLogger
 from omegaconf import OmegaConf
 import pandas as pd
@@ -211,4 +208,3 @@ def main(cfg: DictConfig):
 
 if __name__ == "__main__":
     main()
-# We use the best performing checkpoints from all std runs here. They can be downloaded here:
