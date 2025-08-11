@@ -28,6 +28,7 @@ mv finetuned_weights causal_discovery_zoo/methods/cp_models
 mv pretrained_weights causal_discovery_zoo/methods/cp_models
 rm cp_models.zip
 ```
+We also upload the raw exprimental results [here]([https://github.com/CausalRivers/causalrivers/](https://zenodo.org/records/16797284?token=eyJhbGciOiJIUzUxMiJ9.eyJpZCI6IjhiMDc4YTEyLWY0MTAtNDk4MS05NmU5LTkwYTNhYWI3NWRhYiIsImRhdGEiOnt9LCJyYW5kb20iOiI2MDVlMjliNzAxNjI5ZTM3ZjYxMWE5Y2M3NTQyNGM4ZSJ9.pH4yqfkiT5ZTe3IcwsQC3CVQc27DjZCKJA16kqz14YgNY__9fVy_76SYEpnwBRsQbaraQB-ffm6hEQ6Putaaag)) (not needed for reproductions): 
 
 
 ## Running our benchmarking script
