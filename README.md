@@ -8,8 +8,8 @@ This repository contains resources and documentation for the experiments conduct
 - **grid_export1/** and **grid_export2/**: Contain the exported raw values from our experiments.
 - **exp1.ipynb - exp3.ipynb/**: Document the extraction process for the final tables used in the paper.
 - **extract_grid_info.py**: Script for generating grid exports from raw experimental data (Not included but feel free to request).
-- **Causal Discovery Zoo/**: Includes benchmarking scripts, all evaluated methods, and the finetuning script for CP (Causal Process).
-- **CP Weights**: To use the raw or finetuned CP weights, download them from the [release page](https://github.com/CausalRivers/experiments/releases).
+- **Causal Discovery Zoo/**: Includes benchmarking scripts, all evaluated methods, and the finetuning script for CP (Causal Pretraining).
+
 
 
 
@@ -19,7 +19,15 @@ This repository contains resources and documentation for the experiments conduct
 ## Installation
 To reproduce results or verify the experimental standards described in the paper, clone and install the [main repository](https://github.com/CausalRivers/causalrivers/) first and simple clone this repo inside
 
+- **CP Weights**: To use the raw or finetuned CP weights, download them from the [release page](https://github.com/CausalRivers/experiments/releases) by running:
 
+```bash
+wget https://github.com/CausalRivers/experiments/releases/download/weights/cp_models.zip
+unzip cp_models.zip
+mv finetuned_weights causal_discovery_zoo/methods/cp_models
+mv pretrained_weights causal_discovery_zoo/methods/cp_models
+rm cp_models.zip
+```
 
 
 ## Running our benchmarkin script
