@@ -6,7 +6,7 @@ import torch.optim as opt
 from torchmetrics.classification import BinaryF1Score
 
 from methods.cp_models.gru import gru
-from methods.cp_models.informer import transformer
+from methods.cp_models.transformer import transformer
 
 # Super stripped down version of the CP repo.
 

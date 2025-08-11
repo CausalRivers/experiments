@@ -54,8 +54,8 @@ ds_order:  [
     "disjoint_10"
 ]
 
-
-data_path: /home/datasets4/stein/rivers/paper_result_storage/new_runs/
+# raw results path. Excluded from this repo
+data_path: /home/datasets4/stein/rivers/paper_result_storage/new_runs/ 
 exp: exp1/
 method_name: combo
 save_path: "grid_export_"

@@ -172,7 +172,7 @@ def main(cfg: DictConfig):
     architecture = cfg.pretrained_path + cfg.cp_architecture + ".ckpt"
     print(architecture)
     model = Architecture_PL.load_from_checkpoint(architecture)
-    # new last alyer and formatting.
+    # new last layer and formatting.
     print(model.d_ff)
     model.adapt_structure_to_rivers()
 
