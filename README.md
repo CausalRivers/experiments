@@ -11,6 +11,11 @@ This repository contains resources and documentation for the experiments conduct
 - **Causal Discovery Zoo/**: Includes benchmarking scripts, all evaluated methods, and the finetuning script for CP (Causal Process).
 - **CP Weights**: To use the raw or finetuned CP weights, download them from the [release page](https://github.com/CausalRivers/experiments/releases).
 
+
+
+
+
+
 ## Installation
 To reproduce results or verify the experimental standards described in the paper, clone and install the [main repository](https://github.com/CausalRivers/causalrivers/) first and simple clone this repo inside
 
@@ -27,6 +32,14 @@ E.g., this script would reproduce the scoring of VAR on the flood set (The param
 cd causal_discovery_zoo
 python benchmark.py label_path=../../datasets/random_5/flood.p data_path=../../product/rivers_ts_flood.csv method=var data_preprocess.normalize=False data_preprocess.resolution=15min method.max_lag=5 method.var_absolute_values=False
 ```
+
+
+This would reproduce the results for the close_5 dataset with a finetuned CP-architecture (Exp.3 )
+```bash
+
+python benchmark.py method=cp method.use_river_finetune=True label_path="../../datasets/close_5/east.p" data_preprocess.resolution="12H" data_preprocess.normalize=False
+```
+
 
 
 Note that this script is configured with hydra so you can leverage multirun as well as Slurm configurations.

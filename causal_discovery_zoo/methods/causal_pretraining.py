@@ -35,7 +35,6 @@ def causal_pretraining_baseline(X,cfg):
     corr = torch.nan_to_num(corr,nan=0)
     sample_prep, corr = reshape_long_ts(sample_prep, corr)
 
-
     pred =[]
     for x in range(0,corr.shape[0], cfg.batch_size):
         output = torch.sigmoid(M((sample_prep[x:x+cfg.batch_size], corr[x:x+cfg.batch_size]))).to("cpu").detach().numpy()
@@ -78,6 +77,7 @@ def reshape_long_ts(sample, corr):
 def pad(sample_prep):
     """
     Cp weights are for 5 variables.
+    # TODO THIS ACTUALLY INTRODUCES NONTDETERMINISTIC BEHAVIOUR AS WE ADD NOISE.
     """
     if sample_prep.shape[2] != 5:
         sample_prep = torch.concat(
