@@ -30,7 +30,7 @@ rm cp_models.zip
 ```
 
 
-## Running our benchmarkin script
+## Running our benchmarking script
 
 If you want to conduct you own grid search on a specific graph set you can simply run benchmark.py with your custom configuration.
 
