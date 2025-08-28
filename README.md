@@ -51,7 +51,11 @@ pip install hydra-core
 pip install hydra-submitit-launcher --upgrade
 ```
 
+For CDMI: 
 
+```bash
+conda env create -f causal_rivers_core.yml
+```
 
 
 
