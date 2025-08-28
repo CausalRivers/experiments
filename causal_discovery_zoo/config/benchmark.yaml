@@ -15,14 +15,9 @@ dt_preprocess: True
 
 hydra:
   launcher: 
-    cpus_per_task: 4
-    gpus_per_task: 0
-    timeout_min: 6969
-    mem_gb: 16
-    exclude: ker
-    #partition: workstation,robolab
+    nodes: 1
+    cpus_per_task: 1
+    timeout_min: 60
+    mem_gb: 8
+    partition: gpu,gpu1  #standard
 
-  #mode: MULTIRUN
-#   sweeper:
-#     params:
-#         method: choice("corr", "mean", "combo", "var")

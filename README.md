@@ -31,6 +31,20 @@ rm cp_models.zip
 We also upload the raw exprimental results [here](https://zenodo.org/records/16797284?token=eyJhbGciOiJIUzUxMiJ9.eyJpZCI6IjhiMDc4YTEyLWY0MTAtNDk4MS05NmU5LTkwYTNhYWI3NWRhYiIsImRhdGEiOnt9LCJyYW5kb20iOiI2MDVlMjliNzAxNjI5ZTM3ZjYxMWE5Y2M3NTQyNGM4ZSJ9.pH4yqfkiT5ZTe3IcwsQC3CVQc27DjZCKJA16kqz14YgNY__9fVy_76SYEpnwBRsQbaraQB-ffm6hEQ6Putaaag) (not needed for reproductions): 
 
 
+
+For running PCMCI and Varlingam you can simply install the following in the base environment: 
+```bash
+pip install lingam tigramite
+```
+
+
+Unfortunately for dynotears, cp and cdmi a new environment is required.
+the can be found in: causal_discovery_zoo/envs
+
+
+
+
+
 ## Running our benchmarking script
 
 If you want to conduct you own grid search on a specific graph set you can simply run benchmark.py with your custom configuration.
