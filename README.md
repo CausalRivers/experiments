@@ -57,8 +57,14 @@ For CDMI:
 conda env create -f causal_rivers_core.yml
 ```
 
+For CP: 
 
+Use the base environment and install: 
 
+```bash
+pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu129
+pip install lightning
+```
 
 
 ## Running our benchmarking script
