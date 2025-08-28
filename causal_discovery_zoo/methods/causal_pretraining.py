@@ -10,53 +10,51 @@ from methods.cp_models.transformer import transformer
 
 # Super stripped down version of the CP repo.
 
-def causal_pretraining_baseline(X,cfg):
 
-
+def causal_pretraining_baseline(X, cfg):
     # some loading schemes
     model = Architecture_PL.load_from_checkpoint(cfg.weight_path + cfg.architecture + ".ckpt")
     if cfg.use_river_finetune:
-        #TODO there has to be a better way here.
+        # TODO there has to be a better way here.
         model = Architecture_PL.load_from_checkpoint(cfg.weight_path + "unidirectional" + ".ckpt")
         model.adapt_structure_to_rivers()
         checkpoint = torch.load(cfg.finetune_path, weights_only=False)
-        model.load_state_dict(checkpoint['state_dict'])
+        model.load_state_dict(checkpoint["state_dict"])
 
     M = model.model
     M = M.eval()
-    M = M.to("cuda")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    M = M.to(device)
 
     n_vars = X.shape[1]
-    sample_prep = pad(torch.Tensor(X.values).unsqueeze(0).to("cuda"))
-    #Has to be provided.
+    sample_prep = pad(torch.Tensor(X.values).unsqueeze(0).to(device))
+    # Has to be provided.
     corr = lagged_batch_corr(sample_prep, 3)
 
     # sometimes there is a constant ts which results in nan corr. replace this with 0
-    corr = torch.nan_to_num(corr,nan=0)
+    corr = torch.nan_to_num(corr, nan=0)
     sample_prep, corr = reshape_long_ts(sample_prep, corr)
 
-    pred =[]
-    for x in range(0,corr.shape[0], cfg.batch_size):
-        output = torch.sigmoid(M((sample_prep[x:x+cfg.batch_size], corr[x:x+cfg.batch_size]))).to("cpu").detach().numpy()
+    pred = []
+    for x in range(0, corr.shape[0], cfg.batch_size):
+        output = torch.sigmoid(M((sample_prep[x : x + cfg.batch_size], corr[x : x + cfg.batch_size]))).to("cpu").detach().numpy()
         # Sometimes this is an issue as with constant values this can produce overflow. catch this here.
         if np.isnan(output).sum() > 0:
-            print("ISSUE, divergence of output? Possible but should be rare!") 
+            print("ISSUE, divergence of output? Possible but should be rare!")
             output = torch.zeros(output.shape)
         pred.append(output)
-    pred = np.concatenate(pred,axis=0)
+    pred = np.concatenate(pred, axis=0)
     if cfg.use_river_finetune and (X.shape[1] != 5):
-        pred = pred[:, :X.shape[1], :X.shape[1]]
+        pred = pred[:, : X.shape[1], : X.shape[1]]
     else:
         if n_vars != 5:
-            pred = pred[:,:X.shape[1], :X.shape[1], :]
-
+            pred = pred[:, : X.shape[1], : X.shape[1], :]
 
     if cfg.batch_aggregation == "mean":
         pred = np.array(pred).mean(axis=0)
     elif cfg.batch_aggregation == "max":
-        pred = np.array(pred).max(axis=0)       
+        pred = np.array(pred).max(axis=0)
     return pred
-
 
 
 #### Helpers ____________________________________
@@ -66,12 +64,12 @@ def reshape_long_ts(sample, corr):
     """
     # This speeds up the process and prevents overflow of the transformer
     """
-    if (sample.shape[1] > 600): #and cfg.cp_architecture == "transformer":
-        # we run multiple subsets of the data as batch and mean over the result. 
-        sample = sample[:,: -int(sample.shape[1] % 600), :]
-        sample = sample.reshape((int(sample.shape[1] / 600),600,sample.shape[2]))
-        corr = corr.repeat(len(sample),1,1)
-    return sample,corr
+    if sample.shape[1] > 600:  # and cfg.cp_architecture == "transformer":
+        # we run multiple subsets of the data as batch and mean over the result.
+        sample = sample[:, : -int(sample.shape[1] % 600), :]
+        sample = sample.reshape((int(sample.shape[1] / 600), 600, sample.shape[2]))
+        corr = corr.repeat(len(sample), 1, 1)
+    return sample, corr
 
 
 def pad(sample_prep):
@@ -79,15 +77,14 @@ def pad(sample_prep):
     Cp weights are for 5 variables.
     # TODO THIS ACTUALLY INTRODUCES NONTDETERMINISTIC BEHAVIOUR AS WE ADD NOISE.
     """
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if sample_prep.shape[2] != 5:
-        sample_prep = torch.concat(
-            [sample_prep[0, :, :], torch.normal(0, 0.1, (len(sample_prep[0]), 5-sample_prep.shape[2])).to("cuda")], axis=1
-        )
+        sample_prep = torch.concat([sample_prep[0, :, :], torch.normal(0, 0.1, (len(sample_prep[0]), 5 - sample_prep.shape[2])).to(device)], axis=1)
         sample_prep = sample_prep.unsqueeze(0)
     else:
         sample_prep = sample_prep
     return sample_prep
-
 
 
 class Architecture_PL(pl.LightningModule):
@@ -138,7 +135,7 @@ class Architecture_PL(pl.LightningModule):
         self.full_representation_mode = full_representation_mode
         self.loss_scaling = {}
         self.distinguish_mode = distinguish_mode
-        self.F1 =   [BinaryF1Score(th).to("cuda") for th in np.arange(0,1.1,0.1)]
+        self.F1 = [BinaryF1Score(th).to("cuda" if torch.cuda.is_available() else "cpu") for th in np.arange(0, 1.1, 0.1)]
         # specific for the model type not used all the time
         self.model_type = model_type
         self.d_ff = d_ff
@@ -175,7 +172,6 @@ class Architecture_PL(pl.LightningModule):
 
         self.classifier_loss = self.classifier_loss_init()
 
-
     def classifier_loss_init(self):
         if self.loss_type == "mse":
             print("init with MSE")
@@ -193,12 +189,11 @@ class Architecture_PL(pl.LightningModule):
 
         curve = torch.Tensor([f1(y_class, lab_class) for f1 in self.F1])
         f1_max = torch.max(curve)
-        out_d["f1_max"  "_" + name] = f1_max.type("torch.DoubleTensor")
-        out_d["f1_max_th"  "_" + name] = torch.argmax(curve).type("torch.DoubleTensor")
+        out_d["f1_max_" + name] = f1_max.type("torch.DoubleTensor")
+        out_d["f1_max_th_" + name] = torch.argmax(curve).type("torch.DoubleTensor")
         self.log_dict(out_d, sync_dist=True, prog_bar=True)
 
     def training_step(self, batch, batch_idx):
-
         inputs, labels = batch
         # Change input representation for the MLP.
         y_ = self.model(inputs)
@@ -231,7 +226,6 @@ class Architecture_PL(pl.LightningModule):
         self.calc_log_F1_metrics(proba, labels, name=name)
         self.log(name + "_output_mean", proba.mean(), sync_dist=True, prog_bar=True)
 
-
     def validation_step(self, batch, _):
         self.non_train_step(batch, name="val")
 
@@ -247,18 +241,16 @@ class Architecture_PL(pl.LightningModule):
         schedule = torch.optim.lr_scheduler.ReduceLROnPlateau(optim, factor=0.2)
         return [optim], [{"scheduler": schedule, "monitor": "train_loss"}]
 
-
     def adapt_structure_to_rivers(self):
         if self.model_type == "transformer":
             self.model.fc2 = torch.nn.Linear(self.d_ff, 25)
         else:
             self.model.fc3 = torch.nn.Linear(self.model.hidden_size3, 25)
+
         def new_reformat(x):
-                return torch.reshape(x, (x.shape[0], 5,5))
+            return torch.reshape(x, (x.shape[0], 5, 5))
+
         self.model.reformat = new_reformat
-
-
-
 
 
 def lagged_batch_corr(points, max_lags):
@@ -268,29 +260,19 @@ def lagged_batch_corr(points, max_lags):
     # roll to calculate lagged cov:
     # We dont use the batched component here so might be uneccesary complicated..
 
-
     B, N, D = points.size()
 
     # we roll the data and add it together to have the lagged versions in the table
-    stack = torch.concat(
-        [torch.roll(points, x, dims=1) for x in range(max_lags + 1)], dim=2
-    )
+    stack = torch.concat([torch.roll(points, x, dims=1) for x in range(max_lags + 1)], dim=2)
 
     mean = stack.mean(dim=1).unsqueeze(1)
     std = stack.std(dim=1).unsqueeze(1)
     diffs = (stack - mean).reshape(B * N, D * (max_lags + 1))
 
-    prods = torch.bmm(diffs.unsqueeze(2), diffs.unsqueeze(1)).reshape(
-        B, N, D * (max_lags + 1), D * (max_lags + 1)
-    )
+    prods = torch.bmm(diffs.unsqueeze(2), diffs.unsqueeze(1)).reshape(B, N, D * (max_lags + 1), D * (max_lags + 1))
 
     bcov = prods.sum(dim=1) / (N - 1)  # Unbiased estimate
     # make correlation out of it by dividing by the product of the stds
-    corr = bcov / (
-        std.repeat(1, D * (max_lags + 1), 1).reshape(
-            std.shape[0], D * (max_lags + 1), D * (max_lags + 1)
-        )
-        * std.permute((0, 2, 1))
-    )
+    corr = bcov / (std.repeat(1, D * (max_lags + 1), 1).reshape(std.shape[0], D * (max_lags + 1), D * (max_lags + 1)) * std.permute((0, 2, 1)))
     # we can remove backwards in time links. (keep only the original values)
     return corr[:, :D, D:]  # (B, D, D)
