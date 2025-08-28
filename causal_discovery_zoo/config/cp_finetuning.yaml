@@ -55,6 +55,7 @@ hydra:
   launcher: 
     nodes: 1
     cpus_per_task: 1
+    gpus_per_node: 1
     timeout_min: 60
     mem_gb: 8
     partition: gpu,gpu1  #standard
