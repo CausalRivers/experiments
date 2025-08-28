@@ -38,8 +38,20 @@ pip install lingam tigramite
 ```
 
 
-Unfortunately for dynotears, cp and cdmi a new environment is required.
-the can be found in: causal_discovery_zoo/envs
+Unfortunately for Dynotears, CP, and CDMI, a new environment is required.
+
+For Dynotears: 
+```bash
+
+conda create -n dyno
+conda activate dyno 
+conda install python==3.9.0
+pip install causalnex
+pip install hydra-core
+pip install hydra-submitit-launcher --upgrade
+```
+
+
 
 
 
