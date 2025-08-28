@@ -53,9 +53,8 @@ hydra:
 #         resolution_value: choice("1H", "6H")
 
   launcher: 
-    cpus_per_task: 4
-    #gpus_per_task: 1
-    gres: "shard:2"
-    timeout_min: 6969
+    nodes: 1
+    cpus_per_task: 1
+    timeout_min: 60
     mem_gb: 8
-    partition: workstation,robolab
+    partition: gpu,gpu1  #standard
