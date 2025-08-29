@@ -63,7 +63,7 @@ Use the base environment and install:
 
 ```bash
 pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu129
-pip install lightning
+pip install lightning tensorboard rich
 ```
 
 
